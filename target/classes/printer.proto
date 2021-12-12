@@ -18,7 +18,7 @@ service printer {
 message containsPrintJob {
 	string content = 1;
 	int32 quantity = 2;
-	string staples =3;
+	string staples = 3;
 }
 
 message confirmationMessage{
@@ -30,9 +30,5 @@ message containsRequest{
 }
 
 message printerStatus{
-	string activity = 1;
-	int32 inkLevels = 2;
-	string paper = 3;
-	int32 queue = 4;
-	int32 staplesRemaining =5;
+	string responseMessage = 1;
 }

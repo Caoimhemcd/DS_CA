@@ -16,11 +16,7 @@ private static final long serialVersionUID = 0L;
     super(builder);
   }
   private printerStatus() {
-    activity_ = "";
-    inkLevels_ = 0;
-    paper_ = "";
-    queue_ = 0;
-    staplesRemaining_ = 0;
+    responseMessage_ = "";
   }
 
   @java.lang.Override
@@ -50,28 +46,7 @@ private static final long serialVersionUID = 0L;
           case 10: {
             java.lang.String s = input.readStringRequireUtf8();
 
-            activity_ = s;
-            break;
-          }
-          case 16: {
-
-            inkLevels_ = input.readInt32();
-            break;
-          }
-          case 26: {
-            java.lang.String s = input.readStringRequireUtf8();
-
-            paper_ = s;
-            break;
-          }
-          case 32: {
-
-            queue_ = input.readInt32();
-            break;
-          }
-          case 40: {
-
-            staplesRemaining_ = input.readInt32();
+            responseMessage_ = s;
             break;
           }
           default: {
@@ -106,99 +81,38 @@ private static final long serialVersionUID = 0L;
             grpc.smartOffice.printerStatus.class, grpc.smartOffice.printerStatus.Builder.class);
   }
 
-  public static final int ACTIVITY_FIELD_NUMBER = 1;
-  private volatile java.lang.Object activity_;
+  public static final int RESPONSEMESSAGE_FIELD_NUMBER = 1;
+  private volatile java.lang.Object responseMessage_;
   /**
-   * <code>string activity = 1;</code>
+   * <code>string responseMessage = 1;</code>
    */
-  public java.lang.String getActivity() {
-    java.lang.Object ref = activity_;
+  public java.lang.String getResponseMessage() {
+    java.lang.Object ref = responseMessage_;
     if (ref instanceof java.lang.String) {
       return (java.lang.String) ref;
     } else {
       com.google.protobuf.ByteString bs = 
           (com.google.protobuf.ByteString) ref;
       java.lang.String s = bs.toStringUtf8();
-      activity_ = s;
+      responseMessage_ = s;
       return s;
     }
   }
   /**
-   * <code>string activity = 1;</code>
+   * <code>string responseMessage = 1;</code>
    */
   public com.google.protobuf.ByteString
-      getActivityBytes() {
-    java.lang.Object ref = activity_;
+      getResponseMessageBytes() {
+    java.lang.Object ref = responseMessage_;
     if (ref instanceof java.lang.String) {
       com.google.protobuf.ByteString b = 
           com.google.protobuf.ByteString.copyFromUtf8(
               (java.lang.String) ref);
-      activity_ = b;
+      responseMessage_ = b;
       return b;
     } else {
       return (com.google.protobuf.ByteString) ref;
     }
-  }
-
-  public static final int INKLEVELS_FIELD_NUMBER = 2;
-  private int inkLevels_;
-  /**
-   * <code>int32 inkLevels = 2;</code>
-   */
-  public int getInkLevels() {
-    return inkLevels_;
-  }
-
-  public static final int PAPER_FIELD_NUMBER = 3;
-  private volatile java.lang.Object paper_;
-  /**
-   * <code>string paper = 3;</code>
-   */
-  public java.lang.String getPaper() {
-    java.lang.Object ref = paper_;
-    if (ref instanceof java.lang.String) {
-      return (java.lang.String) ref;
-    } else {
-      com.google.protobuf.ByteString bs = 
-          (com.google.protobuf.ByteString) ref;
-      java.lang.String s = bs.toStringUtf8();
-      paper_ = s;
-      return s;
-    }
-  }
-  /**
-   * <code>string paper = 3;</code>
-   */
-  public com.google.protobuf.ByteString
-      getPaperBytes() {
-    java.lang.Object ref = paper_;
-    if (ref instanceof java.lang.String) {
-      com.google.protobuf.ByteString b = 
-          com.google.protobuf.ByteString.copyFromUtf8(
-              (java.lang.String) ref);
-      paper_ = b;
-      return b;
-    } else {
-      return (com.google.protobuf.ByteString) ref;
-    }
-  }
-
-  public static final int QUEUE_FIELD_NUMBER = 4;
-  private int queue_;
-  /**
-   * <code>int32 queue = 4;</code>
-   */
-  public int getQueue() {
-    return queue_;
-  }
-
-  public static final int STAPLESREMAINING_FIELD_NUMBER = 5;
-  private int staplesRemaining_;
-  /**
-   * <code>int32 staplesRemaining = 5;</code>
-   */
-  public int getStaplesRemaining() {
-    return staplesRemaining_;
   }
 
   private byte memoizedIsInitialized = -1;
@@ -215,20 +129,8 @@ private static final long serialVersionUID = 0L;
   @java.lang.Override
   public void writeTo(com.google.protobuf.CodedOutputStream output)
                       throws java.io.IOException {
-    if (!getActivityBytes().isEmpty()) {
-      com.google.protobuf.GeneratedMessageV3.writeString(output, 1, activity_);
-    }
-    if (inkLevels_ != 0) {
-      output.writeInt32(2, inkLevels_);
-    }
-    if (!getPaperBytes().isEmpty()) {
-      com.google.protobuf.GeneratedMessageV3.writeString(output, 3, paper_);
-    }
-    if (queue_ != 0) {
-      output.writeInt32(4, queue_);
-    }
-    if (staplesRemaining_ != 0) {
-      output.writeInt32(5, staplesRemaining_);
+    if (!getResponseMessageBytes().isEmpty()) {
+      com.google.protobuf.GeneratedMessageV3.writeString(output, 1, responseMessage_);
     }
     unknownFields.writeTo(output);
   }
@@ -239,23 +141,8 @@ private static final long serialVersionUID = 0L;
     if (size != -1) return size;
 
     size = 0;
-    if (!getActivityBytes().isEmpty()) {
-      size += com.google.protobuf.GeneratedMessageV3.computeStringSize(1, activity_);
-    }
-    if (inkLevels_ != 0) {
-      size += com.google.protobuf.CodedOutputStream
-        .computeInt32Size(2, inkLevels_);
-    }
-    if (!getPaperBytes().isEmpty()) {
-      size += com.google.protobuf.GeneratedMessageV3.computeStringSize(3, paper_);
-    }
-    if (queue_ != 0) {
-      size += com.google.protobuf.CodedOutputStream
-        .computeInt32Size(4, queue_);
-    }
-    if (staplesRemaining_ != 0) {
-      size += com.google.protobuf.CodedOutputStream
-        .computeInt32Size(5, staplesRemaining_);
+    if (!getResponseMessageBytes().isEmpty()) {
+      size += com.google.protobuf.GeneratedMessageV3.computeStringSize(1, responseMessage_);
     }
     size += unknownFields.getSerializedSize();
     memoizedSize = size;
@@ -273,16 +160,8 @@ private static final long serialVersionUID = 0L;
     grpc.smartOffice.printerStatus other = (grpc.smartOffice.printerStatus) obj;
 
     boolean result = true;
-    result = result && getActivity()
-        .equals(other.getActivity());
-    result = result && (getInkLevels()
-        == other.getInkLevels());
-    result = result && getPaper()
-        .equals(other.getPaper());
-    result = result && (getQueue()
-        == other.getQueue());
-    result = result && (getStaplesRemaining()
-        == other.getStaplesRemaining());
+    result = result && getResponseMessage()
+        .equals(other.getResponseMessage());
     result = result && unknownFields.equals(other.unknownFields);
     return result;
   }
@@ -294,16 +173,8 @@ private static final long serialVersionUID = 0L;
     }
     int hash = 41;
     hash = (19 * hash) + getDescriptor().hashCode();
-    hash = (37 * hash) + ACTIVITY_FIELD_NUMBER;
-    hash = (53 * hash) + getActivity().hashCode();
-    hash = (37 * hash) + INKLEVELS_FIELD_NUMBER;
-    hash = (53 * hash) + getInkLevels();
-    hash = (37 * hash) + PAPER_FIELD_NUMBER;
-    hash = (53 * hash) + getPaper().hashCode();
-    hash = (37 * hash) + QUEUE_FIELD_NUMBER;
-    hash = (53 * hash) + getQueue();
-    hash = (37 * hash) + STAPLESREMAINING_FIELD_NUMBER;
-    hash = (53 * hash) + getStaplesRemaining();
+    hash = (37 * hash) + RESPONSEMESSAGE_FIELD_NUMBER;
+    hash = (53 * hash) + getResponseMessage().hashCode();
     hash = (29 * hash) + unknownFields.hashCode();
     memoizedHashCode = hash;
     return hash;
@@ -437,15 +308,7 @@ private static final long serialVersionUID = 0L;
     @java.lang.Override
     public Builder clear() {
       super.clear();
-      activity_ = "";
-
-      inkLevels_ = 0;
-
-      paper_ = "";
-
-      queue_ = 0;
-
-      staplesRemaining_ = 0;
+      responseMessage_ = "";
 
       return this;
     }
@@ -473,11 +336,7 @@ private static final long serialVersionUID = 0L;
     @java.lang.Override
     public grpc.smartOffice.printerStatus buildPartial() {
       grpc.smartOffice.printerStatus result = new grpc.smartOffice.printerStatus(this);
-      result.activity_ = activity_;
-      result.inkLevels_ = inkLevels_;
-      result.paper_ = paper_;
-      result.queue_ = queue_;
-      result.staplesRemaining_ = staplesRemaining_;
+      result.responseMessage_ = responseMessage_;
       onBuilt();
       return result;
     }
@@ -526,22 +385,9 @@ private static final long serialVersionUID = 0L;
 
     public Builder mergeFrom(grpc.smartOffice.printerStatus other) {
       if (other == grpc.smartOffice.printerStatus.getDefaultInstance()) return this;
-      if (!other.getActivity().isEmpty()) {
-        activity_ = other.activity_;
+      if (!other.getResponseMessage().isEmpty()) {
+        responseMessage_ = other.responseMessage_;
         onChanged();
-      }
-      if (other.getInkLevels() != 0) {
-        setInkLevels(other.getInkLevels());
-      }
-      if (!other.getPaper().isEmpty()) {
-        paper_ = other.paper_;
-        onChanged();
-      }
-      if (other.getQueue() != 0) {
-        setQueue(other.getQueue());
-      }
-      if (other.getStaplesRemaining() != 0) {
-        setStaplesRemaining(other.getStaplesRemaining());
       }
       this.mergeUnknownFields(other.unknownFields);
       onChanged();
@@ -572,218 +418,71 @@ private static final long serialVersionUID = 0L;
       return this;
     }
 
-    private java.lang.Object activity_ = "";
+    private java.lang.Object responseMessage_ = "";
     /**
-     * <code>string activity = 1;</code>
+     * <code>string responseMessage = 1;</code>
      */
-    public java.lang.String getActivity() {
-      java.lang.Object ref = activity_;
+    public java.lang.String getResponseMessage() {
+      java.lang.Object ref = responseMessage_;
       if (!(ref instanceof java.lang.String)) {
         com.google.protobuf.ByteString bs =
             (com.google.protobuf.ByteString) ref;
         java.lang.String s = bs.toStringUtf8();
-        activity_ = s;
+        responseMessage_ = s;
         return s;
       } else {
         return (java.lang.String) ref;
       }
     }
     /**
-     * <code>string activity = 1;</code>
+     * <code>string responseMessage = 1;</code>
      */
     public com.google.protobuf.ByteString
-        getActivityBytes() {
-      java.lang.Object ref = activity_;
+        getResponseMessageBytes() {
+      java.lang.Object ref = responseMessage_;
       if (ref instanceof String) {
         com.google.protobuf.ByteString b = 
             com.google.protobuf.ByteString.copyFromUtf8(
                 (java.lang.String) ref);
-        activity_ = b;
+        responseMessage_ = b;
         return b;
       } else {
         return (com.google.protobuf.ByteString) ref;
       }
     }
     /**
-     * <code>string activity = 1;</code>
+     * <code>string responseMessage = 1;</code>
      */
-    public Builder setActivity(
+    public Builder setResponseMessage(
         java.lang.String value) {
       if (value == null) {
     throw new NullPointerException();
   }
   
-      activity_ = value;
+      responseMessage_ = value;
       onChanged();
       return this;
     }
     /**
-     * <code>string activity = 1;</code>
+     * <code>string responseMessage = 1;</code>
      */
-    public Builder clearActivity() {
+    public Builder clearResponseMessage() {
       
-      activity_ = getDefaultInstance().getActivity();
+      responseMessage_ = getDefaultInstance().getResponseMessage();
       onChanged();
       return this;
     }
     /**
-     * <code>string activity = 1;</code>
+     * <code>string responseMessage = 1;</code>
      */
-    public Builder setActivityBytes(
+    public Builder setResponseMessageBytes(
         com.google.protobuf.ByteString value) {
       if (value == null) {
     throw new NullPointerException();
   }
   checkByteStringIsUtf8(value);
       
-      activity_ = value;
-      onChanged();
-      return this;
-    }
-
-    private int inkLevels_ ;
-    /**
-     * <code>int32 inkLevels = 2;</code>
-     */
-    public int getInkLevels() {
-      return inkLevels_;
-    }
-    /**
-     * <code>int32 inkLevels = 2;</code>
-     */
-    public Builder setInkLevels(int value) {
-      
-      inkLevels_ = value;
-      onChanged();
-      return this;
-    }
-    /**
-     * <code>int32 inkLevels = 2;</code>
-     */
-    public Builder clearInkLevels() {
-      
-      inkLevels_ = 0;
-      onChanged();
-      return this;
-    }
-
-    private java.lang.Object paper_ = "";
-    /**
-     * <code>string paper = 3;</code>
-     */
-    public java.lang.String getPaper() {
-      java.lang.Object ref = paper_;
-      if (!(ref instanceof java.lang.String)) {
-        com.google.protobuf.ByteString bs =
-            (com.google.protobuf.ByteString) ref;
-        java.lang.String s = bs.toStringUtf8();
-        paper_ = s;
-        return s;
-      } else {
-        return (java.lang.String) ref;
-      }
-    }
-    /**
-     * <code>string paper = 3;</code>
-     */
-    public com.google.protobuf.ByteString
-        getPaperBytes() {
-      java.lang.Object ref = paper_;
-      if (ref instanceof String) {
-        com.google.protobuf.ByteString b = 
-            com.google.protobuf.ByteString.copyFromUtf8(
-                (java.lang.String) ref);
-        paper_ = b;
-        return b;
-      } else {
-        return (com.google.protobuf.ByteString) ref;
-      }
-    }
-    /**
-     * <code>string paper = 3;</code>
-     */
-    public Builder setPaper(
-        java.lang.String value) {
-      if (value == null) {
-    throw new NullPointerException();
-  }
-  
-      paper_ = value;
-      onChanged();
-      return this;
-    }
-    /**
-     * <code>string paper = 3;</code>
-     */
-    public Builder clearPaper() {
-      
-      paper_ = getDefaultInstance().getPaper();
-      onChanged();
-      return this;
-    }
-    /**
-     * <code>string paper = 3;</code>
-     */
-    public Builder setPaperBytes(
-        com.google.protobuf.ByteString value) {
-      if (value == null) {
-    throw new NullPointerException();
-  }
-  checkByteStringIsUtf8(value);
-      
-      paper_ = value;
-      onChanged();
-      return this;
-    }
-
-    private int queue_ ;
-    /**
-     * <code>int32 queue = 4;</code>
-     */
-    public int getQueue() {
-      return queue_;
-    }
-    /**
-     * <code>int32 queue = 4;</code>
-     */
-    public Builder setQueue(int value) {
-      
-      queue_ = value;
-      onChanged();
-      return this;
-    }
-    /**
-     * <code>int32 queue = 4;</code>
-     */
-    public Builder clearQueue() {
-      
-      queue_ = 0;
-      onChanged();
-      return this;
-    }
-
-    private int staplesRemaining_ ;
-    /**
-     * <code>int32 staplesRemaining = 5;</code>
-     */
-    public int getStaplesRemaining() {
-      return staplesRemaining_;
-    }
-    /**
-     * <code>int32 staplesRemaining = 5;</code>
-     */
-    public Builder setStaplesRemaining(int value) {
-      
-      staplesRemaining_ = value;
-      onChanged();
-      return this;
-    }
-    /**
-     * <code>int32 staplesRemaining = 5;</code>
-     */
-    public Builder clearStaplesRemaining() {
-      
-      staplesRemaining_ = 0;
+      responseMessage_ = value;
       onChanged();
       return this;
     }

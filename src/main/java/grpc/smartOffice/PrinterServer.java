@@ -70,11 +70,20 @@ public class PrinterServer extends printerImplBase{
 
 	@Override
 	public void getPrinterUpdate(containsRequest request, StreamObserver<printerStatus> responseObserver ) {
+		//build the response stream message
+		printerStatus.Builder status = printerStatus.newBuilder();
+	    status.setResponseMessage("Activity Status: busy"); 
+		responseObserver.onNext(status.build());
+	    
+		status.setResponseMessage("Ink Levels: Low"); 
+		responseObserver.onNext(status.build());
 		
-		printerStatus confirmation = printerStatus.newBuilder().setActivity("").build();
-	     
-		responseObserver.onNext(confirmation);
-	     
+		status.setResponseMessage("Paper Levels: High"); 
+		responseObserver.onNext(status.build());
+		
+		status.setResponseMessage("Staples Level: High"); 
+		responseObserver.onNext(status.build());
+		
 	    responseObserver.onCompleted();
 		
 	}

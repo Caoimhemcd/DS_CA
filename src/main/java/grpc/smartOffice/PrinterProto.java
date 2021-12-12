@@ -47,14 +47,12 @@ public final class PrinterProto {
       "ontent\030\001 \001(\t\022\020\n\010quantity\030\002 \001(\005\022\017\n\007staple" +
       "s\030\003 \001(\t\"+\n\023confirmationMessage\022\024\n\014confir" +
       "mation\030\001 \001(\t\"\"\n\017containsRequest\022\017\n\007reque" +
-      "st\030\001 \001(\t\"l\n\rprinterStatus\022\020\n\010activity\030\001 " +
-      "\001(\t\022\021\n\tinkLevels\030\002 \001(\005\022\r\n\005paper\030\003 \001(\t\022\r\n" +
-      "\005queue\030\004 \001(\005\022\030\n\020staplesRemaining\030\005 \001(\0052w" +
-      "\n\007printer\0222\n\005print\022\021.containsPrintJob\032\024." +
-      "confirmationMessage\"\000\0228\n\020getPrinterUpdat" +
-      "e\022\020.containsRequest\032\016.printerStatus\"\0000\001B" +
-      "\"\n\020grpc.smartOfficeB\014PrinterProtoP\001b\006pro" +
-      "to3"
+      "st\030\001 \001(\t\"(\n\rprinterStatus\022\027\n\017responseMes" +
+      "sage\030\001 \001(\t2w\n\007printer\0222\n\005print\022\021.contain" +
+      "sPrintJob\032\024.confirmationMessage\"\000\0228\n\020get" +
+      "PrinterUpdate\022\020.containsRequest\032\016.printe" +
+      "rStatus\"\0000\001B\"\n\020grpc.smartOfficeB\014Printer" +
+      "ProtoP\001b\006proto3"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
         new com.google.protobuf.Descriptors.FileDescriptor.    InternalDescriptorAssigner() {
@@ -91,7 +89,7 @@ public final class PrinterProto {
     internal_static_printerStatus_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_printerStatus_descriptor,
-        new java.lang.String[] { "Activity", "InkLevels", "Paper", "Queue", "StaplesRemaining", });
+        new java.lang.String[] { "ResponseMessage", });
   }
 
   // @@protoc_insertion_point(outer_class_scope)

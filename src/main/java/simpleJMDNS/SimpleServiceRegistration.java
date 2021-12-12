@@ -20,10 +20,7 @@ public class SimpleServiceRegistration {
 			 * service information
 			 */
 			
-			//the assumption is that we are registering a grpc server
-			//service_type = "_grpc._tcp.local.";				//service-type.domain
-			// service_name + service_type => simple_http._tcp.local
-			//String service_name = "GrpcServer";							
+			//assumption: registering a grpc server						
 			int service_port = port;
 			String service_desc = "test integration of jmDNS with gRPC";
 				

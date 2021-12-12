@@ -8,37 +8,12 @@ public interface printerStatusOrBuilder extends
     com.google.protobuf.MessageOrBuilder {
 
   /**
-   * <code>string activity = 1;</code>
+   * <code>string responseMessage = 1;</code>
    */
-  java.lang.String getActivity();
+  java.lang.String getResponseMessage();
   /**
-   * <code>string activity = 1;</code>
+   * <code>string responseMessage = 1;</code>
    */
   com.google.protobuf.ByteString
-      getActivityBytes();
-
-  /**
-   * <code>int32 inkLevels = 2;</code>
-   */
-  int getInkLevels();
-
-  /**
-   * <code>string paper = 3;</code>
-   */
-  java.lang.String getPaper();
-  /**
-   * <code>string paper = 3;</code>
-   */
-  com.google.protobuf.ByteString
-      getPaperBytes();
-
-  /**
-   * <code>int32 queue = 4;</code>
-   */
-  int getQueue();
-
-  /**
-   * <code>int32 staplesRemaining = 5;</code>
-   */
-  int getStaplesRemaining();
+      getResponseMessageBytes();
 }
