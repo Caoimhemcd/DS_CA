@@ -24,6 +24,11 @@ public final class SuppliesProto {
   static final 
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internal_static_containsOrderConfirmation_fieldAccessorTable;
+  static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_orderTotal_descriptor;
+  static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_orderTotal_fieldAccessorTable;
 
   public static com.google.protobuf.Descriptors.FileDescriptor
       getDescriptor() {
@@ -36,10 +41,12 @@ public final class SuppliesProto {
       "\n\016supplies.proto\"=\n\026containsOfficeSuppli" +
       "es\022\021\n\tsupply_id\030\001 \001(\t\022\020\n\010quantity\030\002 \001(\005\"" +
       "1\n\031containsOrderConfirmation\022\024\n\014confirma" +
-      "tion\030\001 \001(\t2T\n\010supplies\022H\n\rorderSupplies\022" +
-      "\027.containsOfficeSupplies\032\032.containsOrder" +
-      "Confirmation\"\000(\001B#\n\020grpc.smartOfficeB\rSu" +
-      "ppliesProtoP\001b\006proto3"
+      "tion\030\001 \001(\t\"\033\n\norderTotal\022\r\n\005total\030\001 \001(\t2" +
+      "\222\001\n\010supplies\022H\n\rorderSupplies\022\027.contains" +
+      "OfficeSupplies\032\032.containsOrderConfirmati" +
+      "on\"\000(\001\022<\n\016calculateTotal\022\027.containsOffic" +
+      "eSupplies\032\013.orderTotal\"\000(\0010\001B#\n\020grpc.sma" +
+      "rtOfficeB\rSuppliesProtoP\001b\006proto3"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
         new com.google.protobuf.Descriptors.FileDescriptor.    InternalDescriptorAssigner() {
@@ -65,6 +72,12 @@ public final class SuppliesProto {
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_containsOrderConfirmation_descriptor,
         new java.lang.String[] { "Confirmation", });
+    internal_static_orderTotal_descriptor =
+      getDescriptor().getMessageTypes().get(2);
+    internal_static_orderTotal_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_orderTotal_descriptor,
+        new java.lang.String[] { "Total", });
   }
 
   // @@protoc_insertion_point(outer_class_scope)

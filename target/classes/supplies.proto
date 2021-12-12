@@ -10,6 +10,7 @@ service supplies {
 	rpc orderSupplies(stream containsOfficeSupplies) returns (containsOrderConfirmation){}
 
 	//bidirectional streaming for calculating total
+	rpc calculateTotal(stream containsOfficeSupplies) returns (stream orderTotal){}
 }
 
 message containsOfficeSupplies {
@@ -19,4 +20,8 @@ message containsOfficeSupplies {
 
 message containsOrderConfirmation{
 	string confirmation = 1;
+}
+
+message orderTotal{
+	string total = 1;
 }

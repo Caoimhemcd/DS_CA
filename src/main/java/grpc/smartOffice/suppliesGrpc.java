@@ -59,6 +59,38 @@ public final class suppliesGrpc {
      return getOrderSuppliesMethod;
   }
 
+  private static volatile io.grpc.MethodDescriptor<grpc.smartOffice.containsOfficeSupplies,
+      grpc.smartOffice.orderTotal> getCalculateTotalMethod;
+
+  @io.grpc.stub.annotations.RpcMethod(
+      fullMethodName = SERVICE_NAME + '/' + "calculateTotal",
+      requestType = grpc.smartOffice.containsOfficeSupplies.class,
+      responseType = grpc.smartOffice.orderTotal.class,
+      methodType = io.grpc.MethodDescriptor.MethodType.BIDI_STREAMING)
+  public static io.grpc.MethodDescriptor<grpc.smartOffice.containsOfficeSupplies,
+      grpc.smartOffice.orderTotal> getCalculateTotalMethod() {
+    io.grpc.MethodDescriptor<grpc.smartOffice.containsOfficeSupplies, grpc.smartOffice.orderTotal> getCalculateTotalMethod;
+    if ((getCalculateTotalMethod = suppliesGrpc.getCalculateTotalMethod) == null) {
+      synchronized (suppliesGrpc.class) {
+        if ((getCalculateTotalMethod = suppliesGrpc.getCalculateTotalMethod) == null) {
+          suppliesGrpc.getCalculateTotalMethod = getCalculateTotalMethod = 
+              io.grpc.MethodDescriptor.<grpc.smartOffice.containsOfficeSupplies, grpc.smartOffice.orderTotal>newBuilder()
+              .setType(io.grpc.MethodDescriptor.MethodType.BIDI_STREAMING)
+              .setFullMethodName(generateFullMethodName(
+                  "supplies", "calculateTotal"))
+              .setSampledToLocalTracing(true)
+              .setRequestMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
+                  grpc.smartOffice.containsOfficeSupplies.getDefaultInstance()))
+              .setResponseMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
+                  grpc.smartOffice.orderTotal.getDefaultInstance()))
+                  .setSchemaDescriptor(new suppliesMethodDescriptorSupplier("calculateTotal"))
+                  .build();
+          }
+        }
+     }
+     return getCalculateTotalMethod;
+  }
+
   /**
    * Creates a new async stub that supports all call types for the service
    */
@@ -96,6 +128,16 @@ public final class suppliesGrpc {
       return asyncUnimplementedStreamingCall(getOrderSuppliesMethod(), responseObserver);
     }
 
+    /**
+     * <pre>
+     *bidirectional streaming for calculating total
+     * </pre>
+     */
+    public io.grpc.stub.StreamObserver<grpc.smartOffice.containsOfficeSupplies> calculateTotal(
+        io.grpc.stub.StreamObserver<grpc.smartOffice.orderTotal> responseObserver) {
+      return asyncUnimplementedStreamingCall(getCalculateTotalMethod(), responseObserver);
+    }
+
     @java.lang.Override public final io.grpc.ServerServiceDefinition bindService() {
       return io.grpc.ServerServiceDefinition.builder(getServiceDescriptor())
           .addMethod(
@@ -105,6 +147,13 @@ public final class suppliesGrpc {
                 grpc.smartOffice.containsOfficeSupplies,
                 grpc.smartOffice.containsOrderConfirmation>(
                   this, METHODID_ORDER_SUPPLIES)))
+          .addMethod(
+            getCalculateTotalMethod(),
+            asyncBidiStreamingCall(
+              new MethodHandlers<
+                grpc.smartOffice.containsOfficeSupplies,
+                grpc.smartOffice.orderTotal>(
+                  this, METHODID_CALCULATE_TOTAL)))
           .build();
     }
   }
@@ -136,6 +185,17 @@ public final class suppliesGrpc {
         io.grpc.stub.StreamObserver<grpc.smartOffice.containsOrderConfirmation> responseObserver) {
       return asyncClientStreamingCall(
           getChannel().newCall(getOrderSuppliesMethod(), getCallOptions()), responseObserver);
+    }
+
+    /**
+     * <pre>
+     *bidirectional streaming for calculating total
+     * </pre>
+     */
+    public io.grpc.stub.StreamObserver<grpc.smartOffice.containsOfficeSupplies> calculateTotal(
+        io.grpc.stub.StreamObserver<grpc.smartOffice.orderTotal> responseObserver) {
+      return asyncBidiStreamingCall(
+          getChannel().newCall(getCalculateTotalMethod(), getCallOptions()), responseObserver);
     }
   }
 
@@ -178,6 +238,7 @@ public final class suppliesGrpc {
   }
 
   private static final int METHODID_ORDER_SUPPLIES = 0;
+  private static final int METHODID_CALCULATE_TOTAL = 1;
 
   private static final class MethodHandlers<Req, Resp> implements
       io.grpc.stub.ServerCalls.UnaryMethod<Req, Resp>,
@@ -209,6 +270,9 @@ public final class suppliesGrpc {
         case METHODID_ORDER_SUPPLIES:
           return (io.grpc.stub.StreamObserver<Req>) serviceImpl.orderSupplies(
               (io.grpc.stub.StreamObserver<grpc.smartOffice.containsOrderConfirmation>) responseObserver);
+        case METHODID_CALCULATE_TOTAL:
+          return (io.grpc.stub.StreamObserver<Req>) serviceImpl.calculateTotal(
+              (io.grpc.stub.StreamObserver<grpc.smartOffice.orderTotal>) responseObserver);
         default:
           throw new AssertionError();
       }
@@ -261,6 +325,7 @@ public final class suppliesGrpc {
           serviceDescriptor = result = io.grpc.ServiceDescriptor.newBuilder(SERVICE_NAME)
               .setSchemaDescriptor(new suppliesFileDescriptorSupplier())
               .addMethod(getOrderSuppliesMethod())
+              .addMethod(getCalculateTotalMethod())
               .build();
         }
       }

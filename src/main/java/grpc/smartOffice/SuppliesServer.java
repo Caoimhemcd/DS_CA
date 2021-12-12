@@ -73,5 +73,36 @@ public class SuppliesServer extends suppliesImplBase{
 			}};
 	}
 	
+	@Override
+	public StreamObserver<containsOfficeSupplies> calculateTotal(StreamObserver<orderTotal> responseObserver){
+		
+		return new StreamObserver<containsOfficeSupplies>() {
+		int runningTotal = 0;
+		@Override
+		public void onNext(containsOfficeSupplies value) {
+			System.out.println("On server; message received from client: " + value.getQuantity() + " x " +value.getSupplyId());	
+			runningTotal += value.getQuantity()*10;
+			orderTotal.Builder total = orderTotal.newBuilder();
+			total.setTotal("Your total is: " +runningTotal);
+			responseObserver.onNext(total.build());
+			
+		}
+
+		@Override
+		public void onError(Throwable t) {
+			
+		}
+
+		@Override
+		public void onCompleted() {
+			//Now build response c&p from unary method
+			//builder
+			System.out.println();
+			responseObserver.onCompleted();
+		}};
+		
+	}
+	
+	
 }
 
