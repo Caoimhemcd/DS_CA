@@ -18,7 +18,7 @@ service printer {
 message containsPrintJob {
 	string content = 1;
 	int32 quantity = 2;
-	string staples =3;
+	string staples = 3;
 }
 
 message confirmationMessage{
