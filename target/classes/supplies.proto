@@ -1,0 +1,22 @@
+syntax = "proto3";
+
+option java_package = "grpc.smartOffice";
+option java_multiple_files = true;
+option java_outer_classname = "SuppliesProto";
+
+service supplies {
+
+	//client streaming rpc
+	rpc orderSupplies(stream containsOfficeSupplies) returns (containsOrderConfirmation){}
+
+	//bidirectional streaming for calculating total
+}
+
+message containsOfficeSupplies {
+	string supply_id = 1;
+	int32 quantity = 2;
+}
+
+message containsOrderConfirmation{
+	string confirmation = 1;
+}
