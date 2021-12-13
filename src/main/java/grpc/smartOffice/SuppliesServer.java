@@ -54,7 +54,7 @@ public class SuppliesServer extends suppliesImplBase{
 
 			@Override
 			public void onNext(containsOfficeSupplies value) {
-				System.out.println("On server; message received from client: " + value.getQuantity() + " x " +value.getSupplyId());	
+				System.out.println("Item: " + value.getQuantity() + " x " +value.getSupplyId());	
 			}
 
 			@Override
@@ -67,7 +67,7 @@ public class SuppliesServer extends suppliesImplBase{
 				//Now build response c&p from unary method
 				//builder
 				containsOrderConfirmation.Builder confirmation = containsOrderConfirmation.newBuilder();
-				confirmation.setConfirmation("Server for your stream message");
+				confirmation.setConfirmation("\nOrder Confirmed\n");
 				responseObserver.onNext(confirmation.build());
 				responseObserver.onCompleted();
 			}};
@@ -83,7 +83,7 @@ public class SuppliesServer extends suppliesImplBase{
 			System.out.println("On server; message received from client: " + value.getQuantity() + " x " +value.getSupplyId());	
 			runningTotal += value.getQuantity()*10;
 			orderTotal.Builder total = orderTotal.newBuilder();
-			total.setTotal("Your total is: " +runningTotal);
+			total.setTotal("Item: " + value.getQuantity() + " x " +value.getSupplyId());
 			responseObserver.onNext(total.build());
 			
 		}
@@ -97,7 +97,9 @@ public class SuppliesServer extends suppliesImplBase{
 		public void onCompleted() {
 			//Now build response c&p from unary method
 			//builder
-			System.out.println();
+			orderTotal.Builder total = orderTotal.newBuilder();
+			total.setTotal("Your total is: " +runningTotal);
+			responseObserver.onNext(total.build());
 			responseObserver.onCompleted();
 		}};
 		
