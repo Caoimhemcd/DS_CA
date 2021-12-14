@@ -49,13 +49,11 @@ public class PrinterServer extends printerImplBase{
 	@Override
 	public void print(containsPrintJob printJob, StreamObserver<confirmationMessage> responseObserver ) {
 		int wordCount = wordCount(printJob.getContent());
-		String msg = "Print job accepted. Word Count: " + wordCount;
+		String msg = "Print job accepted. Word Count: " + wordCount +"\nQuantity: " +printJob.getQuantity();
 		confirmationMessage confirmation = confirmationMessage.newBuilder().setConfirmation(msg).build();
 	     
 		responseObserver.onNext(confirmation);
-	     
-	    responseObserver.onCompleted();
-		
+	    responseObserver.onCompleted();	
 	}
 	
 	//word count method
