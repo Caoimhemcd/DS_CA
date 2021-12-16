@@ -117,7 +117,6 @@ public class Client {
 			StreamObserver<containsOfficeSupplies> requestObserver = asyncStub.orderSupplies(responseObserver);
 			requestObserver.onNext(containsOfficeSupplies.newBuilder().setSupplyId("56t7").setQuantity(3).build());
 			requestObserver.onNext(containsOfficeSupplies.newBuilder().setSupplyId("9999").setQuantity(4).build());
-			
 			System.out.println("Client has now sent its messages");
 			requestObserver.onCompleted();
 			
@@ -156,6 +155,14 @@ public class Client {
 			StreamObserver<containsOfficeSupplies> requestObserver = asyncStub.calculateTotal(responseObserver);
 			requestObserver.onNext(containsOfficeSupplies.newBuilder().setSupplyId("56t7").setQuantity(3).build());
 			requestObserver.onNext(containsOfficeSupplies.newBuilder().setSupplyId("9999").setQuantity(4).build());
+			requestObserver.onNext(containsOfficeSupplies.newBuilder().setSupplyId("56t").setQuantity(3).build());
+			requestObserver.onNext(containsOfficeSupplies.newBuilder().setSupplyId("99").setQuantity(4).build());
+			requestObserver.onNext(containsOfficeSupplies.newBuilder().setSupplyId("567").setQuantity(3).build());
+			requestObserver.onNext(containsOfficeSupplies.newBuilder().setSupplyId("999").setQuantity(4).build());
+			requestObserver.onNext(containsOfficeSupplies.newBuilder().setSupplyId("6t7").setQuantity(3).build());
+			requestObserver.onNext(containsOfficeSupplies.newBuilder().setSupplyId("9").setQuantity(4).build());
+			requestObserver.onNext(containsOfficeSupplies.newBuilder().setSupplyId("5t7").setQuantity(3).build());
+			requestObserver.onNext(containsOfficeSupplies.newBuilder().setSupplyId("99899").setQuantity(4).build());
 			
 			//System.out.println("Client has now sent its messages");
 			requestObserver.onCompleted();
