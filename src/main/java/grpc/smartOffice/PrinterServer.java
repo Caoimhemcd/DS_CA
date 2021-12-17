@@ -1,6 +1,7 @@
 package grpc.smartOffice;
 
 import java.io.IOException;
+import java.text.DecimalFormat;
 import java.util.logging.Logger;
 
 import grpc.smartOffice.printerGrpc.printerImplBase;
@@ -11,6 +12,7 @@ import simpleJMDNS.SimpleServiceRegistration;
 
 public class PrinterServer extends printerImplBase{
 	
+	private static final DecimalFormat df = new DecimalFormat("#.##");
 	private static final Logger logger = Logger.getLogger(PrinterServer.class.getName());
 	static int staples = 200;
 	static int paper = 500;
@@ -54,14 +56,13 @@ public class PrinterServer extends printerImplBase{
 		int wordCount = wordCount(printJob.getContent());
 		
 		double characters = printJob.getContent().length(); //stored as double for division calculation later
-		//average characters on a page is 1500
+		//average characters on a page is assumed to be 1500
 		//using 1500 to approximate number of pages used in a printJob
 		int pagesNeeded = (int) Math.ceil(characters/1500); //pages needed for one quantity
 		pagesNeeded = pagesNeeded*printJob.getQuantity(); //pages needed for requested quantity
+		
 		//average number of pages the ink cartridge can print is 300
 		//calculation to reduce inkLevels by relevant percentage
-		
-		
 		if((inkLevels - ((pagesNeeded/300.0)*100.0)) > 0 ) {
 			if((paper - pagesNeeded) > 0) {
 				if(printJob.getStaples().equals("Yes")) {
@@ -92,12 +93,11 @@ public class PrinterServer extends printerImplBase{
 				responseObserver.onNext(confirmation);
 			}
 		} else {
-			inkLevels = 100; //automatically refill/reset ink
+			inkLevels = 100.0; //automatically refill/reset ink
 			String msg = "Not enough ink. Replacing ink cartidge. Send print job again.";
 			confirmationMessage confirmation = confirmationMessage.newBuilder().setConfirmation(msg).build();
 			responseObserver.onNext(confirmation);
 		}
-		
 	    responseObserver.onCompleted();	
 	}
 	
@@ -120,7 +120,7 @@ public class PrinterServer extends printerImplBase{
 		    status.setResponseMessage("Activity Status: Active"); //active since server is switched on
 			responseObserver.onNext(status.build());
 		    
-			status.setResponseMessage("Ink Levels: " + inkLevels + "%"); 
+			status.setResponseMessage("Ink Levels: " + df.format(inkLevels) + "%"); 
 			responseObserver.onNext(status.build());
 			
 			status.setResponseMessage("Paper Levels: "+ checkPaper()); 

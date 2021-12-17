@@ -18,7 +18,6 @@ import simpleJMDNS.SimpleServiceDiscovery;
 
 public class Client {
 	private static final Logger logger1 = Logger.getLogger(PrinterServer.class.getName());
-	private static final Logger logger2 = Logger.getLogger(SuppliesServer.class.getName());
 	private static printerBlockingStub bstub;
 	private static suppliesStub asyncStub;
 	
@@ -96,8 +95,7 @@ public class Client {
 		StreamObserver<containsOrderConfirmation> responseObserver = new StreamObserver<containsOrderConfirmation>() {
 			@Override
 			public void onNext(containsOrderConfirmation value) {
-				System.out.println("Final Response from Supplies Server: " + value.getConfirmation());
-				
+				System.out.println("Final Response from Supplies Server: " + value.getConfirmation());	
 			}
 
 			@Override
@@ -115,11 +113,11 @@ public class Client {
 			//grpc library returns a StreamObserver to us requestObserver
 			//we use this to send our outgoing messages
 			StreamObserver<containsOfficeSupplies> requestObserver = asyncStub.orderSupplies(responseObserver);
-			requestObserver.onNext(containsOfficeSupplies.newBuilder().setSupplyId("56t7").setQuantity(3).build());
-			requestObserver.onNext(containsOfficeSupplies.newBuilder().setSupplyId("9999").setQuantity(4).build());
+			requestObserver.onNext(containsOfficeSupplies.newBuilder().setSupplyId("ITM4").setQuantity(3).build());
+			requestObserver.onNext(containsOfficeSupplies.newBuilder().setSupplyId("ITM2").setQuantity(4).build());
 			System.out.println("Client has now sent its messages");
 			requestObserver.onCompleted();
-			
+		
 			try {
 				Thread.sleep(5000);
 			} catch (InterruptedException e1) {
@@ -130,7 +128,7 @@ public class Client {
 	}
 	
 	public static void calculateTotal() {
-		System.out.println("Supplies Order");
+		System.out.println("Calculating total");
 		StreamObserver<orderTotal> responseObserver = new StreamObserver<orderTotal>() {
 			@Override
 			public void onNext(orderTotal value) {
@@ -153,20 +151,19 @@ public class Client {
 			//grpc library returns a StreamObserver to us requestObserver
 			//we use this to send our outgoing messages
 			StreamObserver<containsOfficeSupplies> requestObserver = asyncStub.calculateTotal(responseObserver);
-			requestObserver.onNext(containsOfficeSupplies.newBuilder().setSupplyId("56t7").setQuantity(3).build());
-			requestObserver.onNext(containsOfficeSupplies.newBuilder().setSupplyId("9999").setQuantity(4).build());
-			requestObserver.onNext(containsOfficeSupplies.newBuilder().setSupplyId("56t").setQuantity(3).build());
-			requestObserver.onNext(containsOfficeSupplies.newBuilder().setSupplyId("99").setQuantity(4).build());
-			requestObserver.onNext(containsOfficeSupplies.newBuilder().setSupplyId("567").setQuantity(3).build());
-			requestObserver.onNext(containsOfficeSupplies.newBuilder().setSupplyId("999").setQuantity(4).build());
-			requestObserver.onNext(containsOfficeSupplies.newBuilder().setSupplyId("6t7").setQuantity(3).build());
-			requestObserver.onNext(containsOfficeSupplies.newBuilder().setSupplyId("9").setQuantity(4).build());
-			requestObserver.onNext(containsOfficeSupplies.newBuilder().setSupplyId("5t7").setQuantity(3).build());
-			requestObserver.onNext(containsOfficeSupplies.newBuilder().setSupplyId("99899").setQuantity(4).build());
+			requestObserver.onNext(containsOfficeSupplies.newBuilder().setSupplyId("ITM1").setQuantity(3).build());
+			requestObserver.onNext(containsOfficeSupplies.newBuilder().setSupplyId("ITM2").setQuantity(4).build());
+			requestObserver.onNext(containsOfficeSupplies.newBuilder().setSupplyId("ITM3").setQuantity(3).build());
+			requestObserver.onNext(containsOfficeSupplies.newBuilder().setSupplyId("ITM4").setQuantity(4).build());
+			requestObserver.onNext(containsOfficeSupplies.newBuilder().setSupplyId("ITM5").setQuantity(3).build());
+			requestObserver.onNext(containsOfficeSupplies.newBuilder().setSupplyId("ITM6").setQuantity(4).build());
+			requestObserver.onNext(containsOfficeSupplies.newBuilder().setSupplyId("ITM1").setQuantity(3).build());
+			requestObserver.onNext(containsOfficeSupplies.newBuilder().setSupplyId("ITM4").setQuantity(4).build());
+			requestObserver.onNext(containsOfficeSupplies.newBuilder().setSupplyId("itm3").setQuantity(3).build());
+			requestObserver.onNext(containsOfficeSupplies.newBuilder().setSupplyId("itm2").setQuantity(4).build());
 			
 			//System.out.println("Client has now sent its messages");
 			requestObserver.onCompleted();
-			
 			try {
 				Thread.sleep(5000);
 			} catch (InterruptedException e1) {

@@ -3,7 +3,6 @@ package grpc.smartOffice;
 import java.awt.BorderLayout;
 import java.awt.CardLayout;
 import java.awt.Container;
-import java.awt.Dimension;
 import java.awt.EventQueue;
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
@@ -17,7 +16,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.jmdns.ServiceInfo;
-import javax.swing.BoxLayout;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -42,6 +40,7 @@ public class GUIApplication implements ItemListener {
 	private static printerBlockingStub bstub;
 	private static suppliesStub asyncStub;
 	private static final Logger logger1 = Logger.getLogger(PrinterServer.class.getName());
+	
 	
 	private ServiceInfo serviceInfo1;
 	private ServiceInfo serviceInfo2;
@@ -129,27 +128,8 @@ public class GUIApplication implements ItemListener {
         cb.addItemListener(this);
         comboBoxPane.add(cb);
         
-        //Create the "cards".
-        //Printer service - print method card
-        /*JPanel card1 = new JPanel();
-        card1.setLayout(new GridLayout(2, 3, 10, 0));
-        card1.add(new JLabel("Text to Print: "));
-        card1.add(new JLabel("Quantity: "));
-        JButton btnPrint = new JButton("Print");
-        card1.add(btnPrint);
-        JTextArea printBox = new JTextArea(6, 30); 
-        card1.add(new JScrollPane(printBox));
-		printBox.setLineWrap(true);
-		printBox.setWrapStyleWord(true);
-        JTextField printQuantityBox = new JTextField("1",5);
-        card1.add(printQuantityBox);
-        textResponse = new JTextArea(6, 30);
-		textResponse .setLineWrap(true);
-		textResponse.setWrapStyleWord(true);
-		JScrollPane scrollPane = new JScrollPane(textResponse);
-		card1.add(scrollPane);
-        */
-        
+        //set up the cards
+        //Printer service - print card
         JPanel card1 = new JPanel();
         card1.setLayout(new FlowLayout());
         //Input of content
@@ -176,8 +156,9 @@ public class GUIApplication implements ItemListener {
         card1.add(btnPrint);
         //response box
         textResponse = new JTextArea(6, 30);
-		textResponse .setLineWrap(true);
+		textResponse.setLineWrap(true);
 		textResponse.setWrapStyleWord(true);
+		textResponse.setEditable(false);
 		JScrollPane scrollPane = new JScrollPane(textResponse);
 		card1.add(scrollPane);
         
@@ -215,6 +196,7 @@ public class GUIApplication implements ItemListener {
         JButton btnPrintUpdate = new JButton("Request Printer Status");
         card2.add(btnPrintUpdate);
         textResponse2 = new JTextArea(6,30);
+        textResponse2.setEditable(false);
         card2.add(textResponse2);
         
         btnPrintUpdate.addActionListener(new ActionListener() {	
@@ -254,8 +236,11 @@ public class GUIApplication implements ItemListener {
         card3.add(btnCalculateOrderTotal);
         JButton btnCalculateOrderTotalFinal = new JButton("Calculate Total");
         card3.add(btnCalculateOrderTotalFinal);
-        textResponse3 = new JTextArea(4,30);
-        card3.add(textResponse3);
+        textResponse3 = new JTextArea(7,45);
+		textResponse3.setLineWrap(true);
+		textResponse3.setWrapStyleWord(true);
+        textResponse3.setEditable(false);
+        card3.add(new JScrollPane(textResponse3));
         ArrayList<String> codes = new ArrayList<String>();
 		ArrayList<Integer> quantities = new ArrayList<Integer>();
         
@@ -268,8 +253,12 @@ public class GUIApplication implements ItemListener {
 						codes.add(codeBox.getText());
 						
 					} catch (Exception e3){
+						textResponse3.setText("");
 						//Exception for if quantity entered cannot be parsed to an integer
 						textResponse3.append("Quantity must be a whole number");
+						//clear array lists so the inputting of items can start again
+						quantities.clear();
+						codes.clear();
 					}
 				
 				}
@@ -280,7 +269,7 @@ public class GUIApplication implements ItemListener {
 			//This will happen when the button is clicked
 			public void actionPerformed(ActionEvent e) {
 				System.out.println("Supplies Order");
-				
+				textResponse3.setText("");
 				StreamObserver<orderTotal> responseObserver = new StreamObserver<orderTotal>() {
 					@Override
 					public void onNext(orderTotal value) {
@@ -293,26 +282,28 @@ public class GUIApplication implements ItemListener {
 					@Override
 					public void onCompleted() {			
 					}};
-					//bidirectional streaming rpc
-					//grpc library returns a StreamObserver to us requestObserver
-					//we use this to send our outgoing messages
-					StreamObserver<containsOfficeSupplies> requestObserver = asyncStub.calculateTotal(responseObserver);
-					for (int i = 0; i< codes.size(); i++) {
-						if(quantities.get(i)>=1) {
-						
-							requestObserver.onNext(containsOfficeSupplies.newBuilder().setSupplyId(codes.get(i)).setQuantity(quantities.get(i)).build());
-						} else {
-							//will use this section if the integer added for quantity was less than 1
-							textResponse3.append("Quantity for each item must be 1 or more");
-						}
+				//bidirectional streaming rpc
+				//grpc library returns a StreamObserver to us requestObserver
+				//we use this to send our outgoing messages
+				StreamObserver<containsOfficeSupplies> requestObserver = asyncStub.calculateTotal(responseObserver);
+				for (int i = 0; i< codes.size(); i++) {
+					if(quantities.get(i)>=1) {
+						requestObserver.onNext(containsOfficeSupplies.newBuilder().setSupplyId(codes.get(i)).setQuantity(quantities.get(i)).build());
+					} else {
+						//will use this section if the integer added for quantity was less than 1
+						textResponse3.append("Quantity for each item must be 1 or more");
 					}
-					requestObserver.onCompleted();
-					
-					try {
-						Thread.sleep(5000);
-					} catch (InterruptedException e1) {
-						e1.printStackTrace();
-					}
+				}
+				requestObserver.onCompleted();
+				//clear array lists so the inputting of items can start again
+				quantities.clear();
+				codes.clear();
+				
+				try {
+					Thread.sleep(5000);
+				} catch (InterruptedException e1) {
+					e1.printStackTrace();
+				}
 			}
 		}); //End of setup button
         
@@ -328,8 +319,11 @@ public class GUIApplication implements ItemListener {
         card4.add(btnAddToOrder);
         JButton btnOrderSupplies = new JButton("Complete Order");
         card4.add(btnOrderSupplies);
-        textResponse4 = new JTextArea(4,30);
-        card4.add(textResponse4);
+        textResponse4 = new JTextArea(7,45);
+        textResponse4.setEditable(false);
+		textResponse4.setLineWrap(true);
+		textResponse4.setWrapStyleWord(true);
+        card4.add(new JScrollPane(textResponse4));
         ArrayList<String> codes1 = new ArrayList<String>();
 		ArrayList<Integer> quantities1 = new ArrayList<Integer>();
         
@@ -338,11 +332,15 @@ public class GUIApplication implements ItemListener {
 			public void actionPerformed(ActionEvent e) {
 				// TODO Auto-generated method stub
 				try{
-					quantities1.add(Integer.parseInt(quantityBox.getText()));
-					codes1.add(codeBox.getText());
+					quantities1.add(Integer.parseInt(quantityBox1.getText()));
+					codes1.add(codeBox1.getText());
 				} catch (Exception e3){
 					//Exception for if quantity entered cannot be parsed to an integer
-					textResponse4.append("Quantity must be a whole number");
+					textResponse4.setText(""); //clear contents so user knows to start again
+					textResponse4.append("Quantity must be a whole number. Restart inputting items.");
+					//clear array lists so the inputting of items can start again
+					quantities1.clear(); 
+					codes.clear();
 				}
 				
 			}
@@ -353,6 +351,7 @@ public class GUIApplication implements ItemListener {
 			//This will happen when the button is clicked
 			public void actionPerformed(ActionEvent e) {
 				System.out.println("Supplies Order");
+				textResponse4.setText("");
 				StreamObserver<containsOrderConfirmation> responseObserver = new StreamObserver<containsOrderConfirmation>() {
 					@Override
 					public void onNext(containsOrderConfirmation value) {
@@ -368,29 +367,32 @@ public class GUIApplication implements ItemListener {
 					@Override
 					public void onCompleted() {
 						// TODO Auto-generated method stub
-					}};
+				}};
 					
-					//client-side streaming
-					//grpc library returns a StreamObserver to us requestObserver
-					//we use this to send our outgoing messages
-					StreamObserver<containsOfficeSupplies> requestObserver = asyncStub.orderSupplies(responseObserver);
-					for (int i = 0; i< codes1.size(); i++) {
-						if(quantities1.get(i)>=1) {
-							requestObserver.onNext(containsOfficeSupplies.newBuilder().setSupplyId(codes1.get(i)).setQuantity(quantities1.get(i)).build());
-						} else {
-							//will use this section if the integer added for quantity was less than 1
-							textResponse4.append("Quantity for each item must be 1 or more");
-						}
+				//client-side streaming
+				//grpc library returns a StreamObserver to us requestObserver
+				//we use this to send our outgoing messages
+				StreamObserver<containsOfficeSupplies> requestObserver = asyncStub.orderSupplies(responseObserver);
+				for (int i = 0; i< codes1.size(); i++) {
+					if(quantities1.get(i)>=1) {
+						requestObserver.onNext(containsOfficeSupplies.newBuilder().setSupplyId(codes1.get(i)).setQuantity(quantities1.get(i)).build());
+					} else {
+						//will use this section if the integer added for quantity was less than 1
+						textResponse4.append("Quantity for each item must be 1 or more. Restart inputting items.");
 					}
-					System.out.println("Client has now sent its messages");
-					requestObserver.onCompleted();
-					
-					try {
-						Thread.sleep(5000);
-					} catch (InterruptedException e1) {
-						// TODO Auto-generated catch block
-						e1.printStackTrace();
-					}
+				}
+				System.out.println("Client has now sent its messages");
+				requestObserver.onCompleted();
+				//clear array lists so the inputting of items can start again
+				quantities1.clear();
+				codes1.clear();
+				
+				try {
+					Thread.sleep(5000);
+				} catch (InterruptedException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
 			}
 		}); //End of setup button
         
