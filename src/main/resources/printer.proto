@@ -5,14 +5,11 @@ option java_multiple_files = true;
 option java_outer_classname = "PrinterProto";
 
 service printer {
-
 	//unary rpc
 	rpc print(containsPrintJob) returns (confirmationMessage){}
 
-
 	//server-side streaming rpc
 	rpc getPrinterUpdate(containsRequest) returns (stream printerStatus){}
-
 }
 
 message containsPrintJob {

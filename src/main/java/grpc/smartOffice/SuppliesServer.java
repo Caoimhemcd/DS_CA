@@ -57,6 +57,7 @@ public class SuppliesServer extends suppliesImplBase{
 		
 	}
 	
+	//client-streaming rpc
 	@Override
 	public StreamObserver<containsOfficeSupplies> orderSupplies(StreamObserver<containsOrderConfirmation> responseObserver) {
 		//System.out.println("On server; inside streaming method");
@@ -91,6 +92,7 @@ public class SuppliesServer extends suppliesImplBase{
 			}};
 	}
 	
+	//bidirectional rpc
 	@Override
 	public StreamObserver<containsOfficeSupplies> calculateTotal(StreamObserver<orderTotal> responseObserver){
 		
@@ -127,7 +129,6 @@ public class SuppliesServer extends suppliesImplBase{
 		}};
 		
 	}
-	
 	
 }
 

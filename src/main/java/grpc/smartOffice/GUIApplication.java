@@ -48,7 +48,6 @@ public class GUIApplication implements ItemListener {
 	
 	private JFrame frame;
 	JPanel cards; //a panel using CardLayout
-	private JTextArea textName1;
 	private JTextArea textResponse, textResponse2, textResponse3, textResponse4;
 
 	/**
@@ -96,24 +95,25 @@ public class GUIApplication implements ItemListener {
 
 		String service_type1 = "_printergrpc._tcp.local.";
 		String service_type2 = "_suppliesgrpc._tcp.local.";
-		//Now retrieve the service info - all we are supplying is the service type
+		//Get the service info - we are supplying is the service type
 		serviceInfo1 = SimpleServiceDiscovery.run(service_type1);
 		serviceInfo2 = SimpleServiceDiscovery.run(service_type2);
 		//Use the serviceInfo to retrieve the port
 		int port1 = serviceInfo1.getPort();
 		int port2 = serviceInfo2.getPort();
 		String host = "localhost";
-		
+		//channel for printer service
 		ManagedChannel printChannel = ManagedChannelBuilder
 				.forAddress(host, port1)
 				.usePlaintext()
 				.build();
-		
+		//channel for supplies service
 		ManagedChannel suppliesChannel = ManagedChannelBuilder
 				.forAddress(host, port2)
 				.usePlaintext()
 				.build();
-
+		//stubs for the services.
+		//Printer uses blocking and Supplies uses asynchronous
 		bstub = printerGrpc.newBlockingStub(printChannel);
 		asyncStub = suppliesGrpc.newStub(suppliesChannel);
 	}
@@ -131,7 +131,7 @@ public class GUIApplication implements ItemListener {
         
         //Create the "cards".
         //Printer service - print method card
-        JPanel card1 = new JPanel();
+        /*JPanel card1 = new JPanel();
         card1.setLayout(new GridLayout(2, 3, 10, 0));
         card1.add(new JLabel("Text to Print: "));
         card1.add(new JLabel("Quantity: "));
@@ -148,46 +148,64 @@ public class GUIApplication implements ItemListener {
 		textResponse.setWrapStyleWord(true);
 		JScrollPane scrollPane = new JScrollPane(textResponse);
 		card1.add(scrollPane);
+        */
         
-        /*JPanel card1 = new JPanel();
+        JPanel card1 = new JPanel();
         card1.setLayout(new FlowLayout());
+        //Input of content
         card1.add(new JLabel("Text to Print: "));
+        JTextArea printBox = new JTextArea(6, 30); 
+        card1.add(new JScrollPane(printBox));
+		printBox.setLineWrap(true);
+		printBox.setWrapStyleWord(true);
+		//quantity or number of copies
         card1.add(new JLabel("Quantity: "));
+        JTextField printQuantityBox = new JTextField("1",5);
+        card1.add(printQuantityBox);
+        //staples drop down options
+        card1.add(new JLabel("Staples?: "));
         String[] options = new String[] {"Yes", "No"};
-		//Create combobox and add to panel with service method options
+		//Create combobox and add to panel with staple options
         JComboBox cbStaples = new JComboBox(options);
         cbStaples.setModel(new DefaultComboBoxModel(options));
         cbStaples.setEditable(false);
         cbStaples.addItemListener(this);
         card1.add(cbStaples);
+        //print button
         JButton btnPrint = new JButton("Print");
         card1.add(btnPrint);
-        JTextArea printBox = new JTextArea(6, 30); 
-        card1.add(new JScrollPane(printBox));
-		printBox.setLineWrap(true);
-		printBox.setWrapStyleWord(true);
-        JTextField printQuantityBox = new JTextField("1",5);
-        card1.add(printQuantityBox);
+        //response box
         textResponse = new JTextArea(6, 30);
 		textResponse .setLineWrap(true);
 		textResponse.setWrapStyleWord(true);
 		JScrollPane scrollPane = new JScrollPane(textResponse);
 		card1.add(scrollPane);
-        */
+        
         btnPrint.addActionListener(new ActionListener() {	
 			//implement action performed method when print button clicked
 			public void actionPerformed(ActionEvent e) {
 				//Retrieve data from GUI
 				String printJobContent = printBox.getText();
-				int printQuantity = Integer.parseInt(printQuantityBox.getText());
-				//String staples = (String) cbStaples.getSelectedItem();
-				//Call the server from inside the button code
-				//unary rpc
-				containsPrintJob printJob = containsPrintJob.newBuilder().setContent(printJobContent).setQuantity(printQuantity).setStaples("No").build();
-				confirmationMessage confirmation = bstub.print(printJob);
-				System.out.println(confirmation.getConfirmation());				
-				//populate the JTextArea in the panel
-				textResponse.append(confirmation.getConfirmation() + "\n");				
+				try{
+					String staples = (String) cbStaples.getSelectedItem();
+					int printQuantity = Integer.parseInt(printQuantityBox.getText());
+					if(printQuantity>0){
+						//Call the server from inside the button code
+						//unary rpc
+						containsPrintJob printJob = containsPrintJob.newBuilder().setContent(printJobContent).setQuantity(printQuantity).setStaples(staples).build();
+						confirmationMessage confirmation = bstub.print(printJob);
+						System.out.println(confirmation.getConfirmation());				
+						//populate the JTextArea in the panel
+						textResponse.append(confirmation.getConfirmation() + "\n");	
+					} else {
+						//this section is accessed if the quantity can be parsed to an integer but is less than 1
+						textResponse.append("Quantity must be 1 or more");
+					}
+				} catch (Exception e2){
+					//this exception happens if the quantity can't be parsed to integer
+					textResponse.append("Quantity must be 1 or more and whole.");
+				}
+
 			}
 		}); //End of setup button
         
@@ -204,17 +222,19 @@ public class GUIApplication implements ItemListener {
 			public void actionPerformed(ActionEvent e) {
 				containsRequest request = containsRequest.newBuilder().setRequest("Y").build();
 				//Retrieve data from GUI				
-
+				
 				//Call the server from inside the button code
 				//server-streaming rpc
 				Iterator<printerStatus> statuses;
 				try {
+					textResponse2.setText(null);//clear previous update in response box
 					statuses = bstub.getPrinterUpdate(request);
 					for(int i = 1; statuses.hasNext(); i++) {
 						printerStatus pStatus = statuses.next();
 						System.out.println(pStatus.getResponseMessage());
-						textResponse2.append(pStatus.getResponseMessage() + "\n");
+						textResponse2.append(pStatus.getResponseMessage() + "\n"); 
 					}
+					
 				} catch (StatusRuntimeException e1) {
 					logger1.log(Level.WARNING, "RPC Streaming failed: {0}", e1.getStatus());
 					return;
@@ -243,8 +263,15 @@ public class GUIApplication implements ItemListener {
 				@Override
 				public void actionPerformed(ActionEvent e) {
 					// TODO Auto-generated method stub
-					quantities.add(Integer.parseInt(quantityBox.getText()));
-					codes.add(codeBox.getText());
+					try{
+						quantities.add(Integer.parseInt(quantityBox.getText()));
+						codes.add(codeBox.getText());
+						
+					} catch (Exception e3){
+						//Exception for if quantity entered cannot be parsed to an integer
+						textResponse3.append("Quantity must be a whole number");
+					}
+				
 				}
 	        });
 		
@@ -271,7 +298,13 @@ public class GUIApplication implements ItemListener {
 					//we use this to send our outgoing messages
 					StreamObserver<containsOfficeSupplies> requestObserver = asyncStub.calculateTotal(responseObserver);
 					for (int i = 0; i< codes.size(); i++) {
-						requestObserver.onNext(containsOfficeSupplies.newBuilder().setSupplyId(codes.get(i)).setQuantity(quantities.get(i)).build());
+						if(quantities.get(i)>=1) {
+						
+							requestObserver.onNext(containsOfficeSupplies.newBuilder().setSupplyId(codes.get(i)).setQuantity(quantities.get(i)).build());
+						} else {
+							//will use this section if the integer added for quantity was less than 1
+							textResponse3.append("Quantity for each item must be 1 or more");
+						}
 					}
 					requestObserver.onCompleted();
 					
@@ -304,8 +337,13 @@ public class GUIApplication implements ItemListener {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				// TODO Auto-generated method stub
-				quantities1.add(Integer.parseInt(quantityBox.getText()));
-				codes1.add(codeBox.getText());
+				try{
+					quantities1.add(Integer.parseInt(quantityBox.getText()));
+					codes1.add(codeBox.getText());
+				} catch (Exception e3){
+					//Exception for if quantity entered cannot be parsed to an integer
+					textResponse4.append("Quantity must be a whole number");
+				}
 				
 			}
         });
@@ -337,7 +375,12 @@ public class GUIApplication implements ItemListener {
 					//we use this to send our outgoing messages
 					StreamObserver<containsOfficeSupplies> requestObserver = asyncStub.orderSupplies(responseObserver);
 					for (int i = 0; i< codes1.size(); i++) {
-						requestObserver.onNext(containsOfficeSupplies.newBuilder().setSupplyId(codes1.get(i)).setQuantity(quantities1.get(i)).build());
+						if(quantities1.get(i)>=1) {
+							requestObserver.onNext(containsOfficeSupplies.newBuilder().setSupplyId(codes1.get(i)).setQuantity(quantities1.get(i)).build());
+						} else {
+							//will use this section if the integer added for quantity was less than 1
+							textResponse4.append("Quantity for each item must be 1 or more");
+						}
 					}
 					System.out.println("Client has now sent its messages");
 					requestObserver.onCompleted();
