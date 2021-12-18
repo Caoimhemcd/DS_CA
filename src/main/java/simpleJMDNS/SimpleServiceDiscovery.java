@@ -14,8 +14,6 @@ public class SimpleServiceDiscovery {
 	private int port;
 	private String host;
 	
-	
-	
 	//option 1
 	private static class MyServiceListener implements ServiceListener{
 
@@ -25,14 +23,12 @@ public class SimpleServiceDiscovery {
 		
 		public void serviceAdded(ServiceEvent event) {
 			// TODO Auto-generated method stub
-			System.out.println("\nService Added " + event.getInfo());
-			
+			System.out.println("\nService Added " + event.getInfo());	
 		}
 
 		public void serviceRemoved(ServiceEvent event) {
 			// TODO Auto-generated method stub
-			System.out.println("Service Removed " + event.getInfo());
-			
+			System.out.println("Service Removed " + event.getInfo());			
 		}
 
 		public void serviceResolved(ServiceEvent event) {
@@ -71,7 +67,6 @@ public class SimpleServiceDiscovery {
 		
 	}
 
-	//public static void main(String[] args) {
 	public static ServiceInfo run(String service_type) {
 		
 		int port = 0;
@@ -81,10 +76,7 @@ public class SimpleServiceDiscovery {
 		
 		try {
 			JmDNS jmdns = JmDNS.create(InetAddress.getLocalHost());
-			
-			//will discover the service based on service type
-			//String service_type = "_grpc._tcp.local";				
-			
+
 			//need to listen for services added/removed etc.
 			
 			//jmdns.addServiceListener(service_type, new MyServiceListener());         //listen for specified type
@@ -99,8 +91,7 @@ public class SimpleServiceDiscovery {
 			port = msl.getPort();
 			System.out.println("This is the port retreived from jmDNS: " + port);
 			
-			jmdns.close();
-			
+			jmdns.close();	
 			
 		} catch (UnknownHostException e) {
 			// TODO Auto-generated catch block
@@ -115,6 +106,4 @@ public class SimpleServiceDiscovery {
 		return serviceInfo;
 
 	}
-
-
 }

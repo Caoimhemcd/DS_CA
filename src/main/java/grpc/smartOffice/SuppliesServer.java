@@ -39,7 +39,6 @@ public class SuppliesServer extends suppliesImplBase{
 		try {
 			Server server = ServerBuilder.forPort(port)
 			    .addService(supplies)
-			    //.addService(greeterserver1)
 			    .build()
 			    .start();
 			System.out.println("\nSupplies Server Started");
@@ -66,15 +65,22 @@ public class SuppliesServer extends suppliesImplBase{
 		//System.out.println("On server; inside streaming method");
 		return new StreamObserver<containsOfficeSupplies>(){
 			int runningTotal = 0;
+			String itemDetails ="";
 			@Override
 			public void onNext(containsOfficeSupplies value) {
-				runningTotal += value.getQuantity()*items.get(value.getSupplyId().toUpperCase());
+				//check that quantity inputed is 0 or more	
 				if(value.getQuantity() >= 0) {
+					//
 					if(items.containsKey(value.getSupplyId().toUpperCase())) {
-						System.out.println("Item: " + value.getQuantity() + " x " +value.getSupplyId());
+						//if item inputed has a valid item code
+						//add the cost for that quantity of the order item to the runningTotal
+						runningTotal += value.getQuantity()*items.get(value.getSupplyId().toUpperCase());
+						itemDetails += "Item: " + value.getQuantity() + " x " +value.getSupplyId() +"\n";
+						System.out.println("Item: " + value.getQuantity() + " x " +value.getSupplyId()); //print out in console 
 					} else {
+						//item not from item valid item HashMap
 						itemError = true;
-						System.out.println("Item with code " + value.getSupplyId() + "does not exist.\n Please choose from ITM1, ITM2, ITM3, ITM4, ITM5, ITM6");
+						System.out.println("Item with code " + value.getSupplyId() + "does not exist.\n Please choose from ITM1, ITM2, ITM3, ITM4, ITM5, ITM6"); //print out on console
 					}
 				}
 			}
@@ -86,16 +92,16 @@ public class SuppliesServer extends suppliesImplBase{
 			@Override
 			public void onCompleted() 
 			{
-				//Now build response c&p from unary method
-				//builder
+				//Now build response
 				containsOrderConfirmation.Builder confirmation = containsOrderConfirmation.newBuilder();
 				if(itemError){
+					//an item was entered that was incorrect - user asked to start again but input correct item codes
 					confirmation.setConfirmation("\nInputted Item Code Not Found.\nPlease choose from ITM1, ITM2, ITM3, ITM4, ITM5, ITM6.\nResend order with correct items");
-					itemError = false;
+					itemError = false; //reset to false
 				}else{
-					confirmation.setConfirmation("\nOrder Confirmed\nTotal: \u20ac"+runningTotal);
+					//send back confirmation message with total
+					confirmation.setConfirmation(itemDetails + "\nOrder Confirmed\nTotal: \u20ac"+runningTotal);
 				}
-				
 				responseObserver.onNext(confirmation.build());
 				responseObserver.onCompleted();
 			}};
@@ -111,14 +117,20 @@ public class SuppliesServer extends suppliesImplBase{
 		public void onNext(containsOfficeSupplies value) {
 			System.out.println("On server; message received from client: " + value.getQuantity() + " x " +value.getSupplyId());	
 			if(value.getQuantity() >= 0) {
+				//valid quantity inputed
+				//build response message with item code and quantity sent back
 				orderTotal.Builder total = orderTotal.newBuilder();
 				total.setTotal("Item: " + value.getQuantity() + " x " +value.getSupplyId() + "\n");
 				responseObserver.onNext(total.build());
 				if(items.containsKey(value.getSupplyId().toUpperCase())) {
+					//if item inputed has a valid item code
+					//add the cost for that quantity of the order item to the runningTotal
 					runningTotal += value.getQuantity()*items.get(value.getSupplyId().toUpperCase());
+					System.out.println("Item: " + value.getQuantity() + " x " +value.getSupplyId()); //print out in console 
 				} else {
+					//item code is not valid
 					itemError1 = true;
-					System.out.println("Item with code " + value.getSupplyId() + "does not exist.\n");
+					System.out.println("Item with code " + value.getSupplyId() + "does not exist.\n"); //message on console
 				}
 			}
 		}
@@ -129,13 +141,14 @@ public class SuppliesServer extends suppliesImplBase{
 
 		@Override
 		public void onCompleted() {
-			//Now build response c&p from unary method
-			//builder
+			//Now build response
 			orderTotal.Builder total = orderTotal.newBuilder();
 			if(itemError1){
+				//an item was entered that was incorrect - user asked to start again but input correct item codes
 				total.setTotal("\nInputted Item Code Not Found.\nPlease choose from ITM1, ITM2, ITM3, ITM4, ITM5, ITM6.\nRe-enter items with correct codes.");
-				itemError1 = false;
+				itemError1 = false; //reset to false
 			} else {
+				//send back final response of total price
 				total.setTotal("Total: \u20ac" +runningTotal);
 			}
 			responseObserver.onNext(total.build());

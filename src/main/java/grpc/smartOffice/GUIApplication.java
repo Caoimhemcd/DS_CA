@@ -45,7 +45,6 @@ public class GUIApplication implements ItemListener {
 	private ServiceInfo serviceInfo1;
 	private ServiceInfo serviceInfo2;
 	
-	private JFrame frame;
 	JPanel cards; //a panel using CardLayout
 	private JTextArea textResponse, textResponse2, textResponse3, textResponse4;
 
@@ -58,7 +57,7 @@ public class GUIApplication implements ItemListener {
 			public void run() {
 				try {
 					GUIApplication window = new GUIApplication();
-					window.frame.setVisible(true);
+					//window.frame.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -155,7 +154,7 @@ public class GUIApplication implements ItemListener {
         JButton btnPrint = new JButton("Print");
         card1.add(btnPrint);
         //response box
-        textResponse = new JTextArea(6, 30);
+        textResponse = new JTextArea(6, 40);
 		textResponse.setLineWrap(true);
 		textResponse.setWrapStyleWord(true);
 		textResponse.setEditable(false);
@@ -167,6 +166,7 @@ public class GUIApplication implements ItemListener {
 			public void actionPerformed(ActionEvent e) {
 				//Retrieve data from GUI
 				String printJobContent = printBox.getText();
+				textResponse.setText("");
 				try{
 					String staples = (String) cbStaples.getSelectedItem();
 					int printQuantity = Integer.parseInt(printQuantityBox.getText());

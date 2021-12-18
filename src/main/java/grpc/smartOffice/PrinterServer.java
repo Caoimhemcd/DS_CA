@@ -14,9 +14,9 @@ public class PrinterServer extends printerImplBase{
 	
 	private static final DecimalFormat df = new DecimalFormat("#.##");
 	private static final Logger logger = Logger.getLogger(PrinterServer.class.getName());
-	static int staples = 200;
-	static int paper = 500;
-	static double inkLevels = 100;
+	int staples = 200;
+	int paper = 500;
+	double inkLevels = 100;
 	public static void main(String [] args) {
 		PrinterServer printerUpdate = new PrinterServer();
 		
@@ -29,7 +29,6 @@ public class PrinterServer extends printerImplBase{
 		try {
 			Server server = ServerBuilder.forPort(port)
 			    .addService(printerUpdate)
-			    //.addService(greeterserver1)
 			    .build()
 			    .start();
 			System.out.println("\nPrinter Server Started");
@@ -54,47 +53,59 @@ public class PrinterServer extends printerImplBase{
 	@Override
 	public void print(containsPrintJob printJob, StreamObserver<confirmationMessage> responseObserver ) {
 		int wordCount = wordCount(printJob.getContent());
-		
 		double characters = printJob.getContent().length(); //stored as double for division calculation later
-		//average characters on a page is assumed to be 1500
-		//using 1500 to approximate number of pages used in a printJob
-		int pagesNeeded = (int) Math.ceil(characters/1500); //pages needed for one quantity
+		//average characters on a page is assumed to be 1800
+		//using 1800 to approximate number of pages used in a printJob
+		int pagesNeeded = (int) Math.ceil(characters/1800); //pages needed for one quantity
 		pagesNeeded = pagesNeeded*printJob.getQuantity(); //pages needed for requested quantity
 		
-		//average number of pages the ink cartridge can print is 300
+		//Approximate average number of pages the ink cartridge can print is 300
 		//calculation to reduce inkLevels by relevant percentage
 		if((inkLevels - ((pagesNeeded/300.0)*100.0)) > 0 ) {
+			//enter here if there is enough ink
 			if((paper - pagesNeeded) > 0) {
+				//enough paper in printer
 				if(printJob.getStaples().equals("Yes")) {
+					//client wants staples
 					if(staples - printJob.getQuantity() >= 0) {
-						String msg = "Print job accepted.\nContent: \""+ printJob.getContent() + "\nWord Count: " + wordCount +"\nQuantity: " +printJob.getQuantity() + "\nStaples: Yes \nPrinting ...";
-						staples = (staples - printJob.getQuantity());
-						inkLevels = (inkLevels - ((pagesNeeded/300.0)*100.0));
-						paper = (paper - pagesNeeded);
+						//enough staples (each copy of printJob gets stapled
+						String msg = "Print job accepted.\nContent: "+ printJob.getContent() + "\nWord Count: " + wordCount +"\nQuantity: " +printJob.getQuantity() + "\nStaples: Yes \nPrinting ...";
+						staples = (staples - printJob.getQuantity()); //reduce staples level by used staples
+						inkLevels = (inkLevels - ((pagesNeeded/300.0)*100.0)); //reduce ink levels percentage by used ink
+						paper = (paper - pagesNeeded); //reduce paper by pagesNeeded
+						//build confirmation message
 						confirmationMessage confirmation = confirmationMessage.newBuilder().setConfirmation(msg).build();
 						responseObserver.onNext(confirmation);
 					} else {
+						//not enough staples
 						String msg = "Not enough Staples. Refilling staples. Send print job again.";
 						staples = 200; //automatically refill/reset staples
+						//build confirmation message
 						confirmationMessage confirmation = confirmationMessage.newBuilder().setConfirmation(msg).build();
 						responseObserver.onNext(confirmation);
 					}
 				} else {
+					//client does not need staples so no need to check staples
 					String msg = "Print job accepted.\nContent: \""+ printJob.getContent() + "\nWord Count: " + wordCount +"\nQuantity: " +printJob.getQuantity() + "\nStaples: No \nPrinting ...";
-					inkLevels = (inkLevels - ((pagesNeeded/300.0)*100.0));
-					paper = paper - pagesNeeded;
+					inkLevels = (inkLevels - ((pagesNeeded/300.0)*100.0)); //reduce ink levels percentage by used ink
+					paper = paper - pagesNeeded; //reduce paper by pagesNeeded
+					//build confirmation message
 					confirmationMessage confirmation = confirmationMessage.newBuilder().setConfirmation(msg).build();
 					responseObserver.onNext(confirmation);
 				}
 			} else {
+				//not enough paper in printer
 				paper = 500; //automatically reset/refill paper
 				String msg = "Not enough paper. Refilling paper. Send print job again.";
+				//build confirmation message
 				confirmationMessage confirmation = confirmationMessage.newBuilder().setConfirmation(msg).build();
 				responseObserver.onNext(confirmation);
 			}
 		} else {
+			//not enough ink
 			inkLevels = 100.0; //automatically refill/reset ink
 			String msg = "Not enough ink. Replacing ink cartidge. Send print job again.";
+			//build confirmation message
 			confirmationMessage confirmation = confirmationMessage.newBuilder().setConfirmation(msg).build();
 			responseObserver.onNext(confirmation);
 		}
@@ -123,41 +134,13 @@ public class PrinterServer extends printerImplBase{
 			status.setResponseMessage("Ink Levels: " + df.format(inkLevels) + "%"); 
 			responseObserver.onNext(status.build());
 			
-			status.setResponseMessage("Paper Levels: "+ checkPaper()); 
+			status.setResponseMessage("Paper Levels: " + paper); 
 			responseObserver.onNext(status.build());
 			
-			status.setResponseMessage("Staples Level: "+checkStaples()); 
+			status.setResponseMessage("Staples Level: " + staples); 
 			responseObserver.onNext(status.build());
 			
 		    responseObserver.onCompleted();
 		}
-		
-	}
-	//method to return High, moderate or low depending on staple quantity left in printer
-	public int checkStaples() {
-		return staples;
-		/*if (staples > 75) {
-			return "High";
-		} else if (staples > 40) {
-			return "Moderate";
-		} else if (staples > 0){
-			return "Low";
-		} else {
-			return "Empty";
-		}*/
-	}
-	
-	//method to return High, moderate or low depending on paper quantity in printer
-	public int checkPaper() {
-		return paper;
-		/*if (paper > 100) {
-			return "High";
-		} else if (paper > 40) {
-			return "Moderate";
-		} else if (paper > 0){
-			return "Low";
-		} else {
-			return "Empty";
-		}*/
 	}
 }

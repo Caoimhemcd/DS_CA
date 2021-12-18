@@ -19,12 +19,10 @@ public class SimpleServiceRegistration {
 			/*
 			 * service information
 			 */
-			
 			//assumption: registering a grpc server						
 			int service_port = port;
 			String service_desc = "test integration of jmDNS with gRPC";
 				
-			
 			//Create ServiceInfo - 
 			//use the factory method to create the ServiceInfo object			
 			ServiceInfo serviceInfo = ServiceInfo.create(service_type, service_name, service_port, service_desc);
@@ -37,9 +35,6 @@ public class SimpleServiceRegistration {
 			//sleep for 10 seconds
 			Thread.sleep(10000);
 			System.out.println("\nJmDNSService Registered");
-			//unregister the services
-			//jmdns.unregisterAllServices();   //you could also unregister a single service
-			
 			
 		} catch (UnknownHostException e) {
 			// TODO Auto-generated catch block
